@@ -1,0 +1,11 @@
+GET http://localhost:3000/players
+###
+POST http://localhost:3000/players/
+Content-Type: application/json
+
+//leave a line space b/w header & body//
+{
+  "playerName": "Vishal",
+  "jerseyNumber": 17,
+  "role": "Bowler"
+}
