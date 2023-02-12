@@ -76,6 +76,45 @@ app.get("/players/:playerId", async (request, response) => {
     SELECT * FROM cricket_team
     WHERE player_id=${playerId}`;
   const player = await db.get(getPlayerQuery);
-  response.send(player);
+  
+  let camelCasePlayer = {
+      playerId: player.player_id,
+      playerName: player.player_name,
+      jerseyNumber: player.jersey_number,
+      role: player.role};
+  response.send(camelCasePlayer);
 });
+
+//Updates player details in the team(database) based on player ID//
+app.put("/players/:playerId", async (request, response) => {
+  const { playerId } = request.params;
+  const playerDetail = request.body;
+  const { playerName, jerseyNumber, role } = playerDetail;
+  console.log(playerName);
+  const updatePlayerQuery = `
+    UPDATE cricket_team
+    SET 
+        player_name = '${playerName}',
+        jersey_number = ${jerseyNumber},
+        role = '${role}'
+    WHERE player_id=${playerId}
+    `;
+  console.log(updatePlayerQuery);
+  const updatedPlayer = await db.run(updatePlayerQuery);
+  console.log(updatedPlayer);
+  response.send("Player Details Updated");
+});
+
+//Deletes a player from the team (database) based on the player Id//
+app.delete("/players/:playerId", async (request, response) => {
+  const { playerId } = request.params;
+  console.log(request.params);
+  const deletePlayerQuery = `
+    delete
+    FROM cricket_team
+    WHERE player_id=${playerId}`;
+  const deletedPlayer = await db.run(deletePlayerQuery);
+  response.send("Player Removed");
+});
+
 module.exports = app;
